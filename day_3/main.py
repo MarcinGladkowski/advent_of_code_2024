@@ -21,9 +21,11 @@ def calculate_expressions_with_do_mode(expressions: list[str]):
 
     result = 0
     do_mode = True
+    do_not_mode_count = 0
     for expression in expressions:
 
         if expression == "don't()":
+            do_not_mode_count += 1
             do_mode = False
             continue
 
@@ -37,6 +39,8 @@ def calculate_expressions_with_do_mode(expressions: list[str]):
         numbers = re.findall(r"\d+", expression)
         result += (int(numbers[0]) * int(numbers[1]))
         do_mode = True
+
+    print(do_not_mode_count)
 
     return result
 
@@ -54,6 +58,4 @@ assert test_data_part_1_result == 161
 # part_1
 data_part_1_result = sum([run(x) for x in load_input()]) # 174336360
 # part_2
-data_part_2_result = sum([run_with_do_mode(x) for x in load_input()]) # 174336360
-# 98826679 to high
-print(data_part_2_result)
+data_part_2_result = run_with_do_mode(''.join(load_input())) # 88802350
