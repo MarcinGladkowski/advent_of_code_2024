@@ -1,3 +1,4 @@
+from itertools import count
 from shlex import split
 
 from input_loader import load_test_intput, load_input
@@ -32,9 +33,24 @@ def calculate(numbers: dict[str, list[int]]):
 
     return result
 
+def similarity(numbers: dict[str, list[int]]) -> int:
+
+    result = 0
+    for key, value in zip(numbers['left'], numbers['right']):
+        element_count = numbers['right'].count(key)
+        if element_count < 1:
+            continue
+
+        result += element_count * key
+
+    return result
+
 
 # exercise input
 input_data = load_input()
 parsed_data = parse_input(input_data)
-exercise_data = calculate(parsed_data)
-print(exercise_data) # 1603498 correct result
+part_1 = calculate(parsed_data)
+print(part_1) # 1603498 correct result
+
+part_2_result = similarity(parsed_data)
+print(part_2_result)
