@@ -1,4 +1,5 @@
-from day_2.main import is_decreasing, is_increasing, max_differ, analyze_reports
+from day_2.main import is_decreasing, is_increasing, max_differ, analyze_reports, analyze_reports_with_level_tolerance, \
+    create_permutations
 
 
 def test_is_decreasing():
@@ -29,3 +30,18 @@ def test_analyze_reports():
     ]
 
     assert analyze_reports(reports) == 2
+
+def test_create_permutations():
+    assert len(create_permutations([8, 6, 4, 4, 1])) == 5
+
+def test_tolerance_single_bad_level():
+    reports = [
+        [7, 6, 4, 2, 1],
+        [1, 2, 7, 8, 9],
+        [9, 7, 6, 2, 1],
+        [1, 3, 2, 4, 5],
+        [8, 6, 4, 4, 1],
+        [1, 3, 6, 7, 9]
+    ]
+
+    assert analyze_reports_with_level_tolerance(reports) == 4
