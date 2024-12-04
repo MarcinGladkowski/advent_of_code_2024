@@ -1,6 +1,3 @@
-from itertools import count
-from shlex import split
-
 from input_loader import load_test_intput, load_input
 
 data = load_test_intput()
