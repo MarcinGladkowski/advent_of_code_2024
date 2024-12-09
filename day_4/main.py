@@ -69,5 +69,84 @@ def process_xmas(data: list[list[str]]) -> int:
 
     return horizontal_count + vertical_count + diagonals_from_left + diagonals_from_right
 
+def sanitize_x_mass(xmas_set: list[list[str]]) -> str:
+    xmas_set[0][1] = '.'
+    xmas_set[1][0] = '.'
+    xmas_set[1][2] = '.'
+    xmas_set[2][1] = '.'
+
+    return ''.join([''.join(row) for row in xmas_set])
+
+
+def count_xmas(parsed_data: str) -> bool:
+    xmas_matrix = [
+        'M.S.A.M.S',
+        'S.M.A.S.M',
+        'M.M.A.S.S',
+        'S.S.A.M.M',
+    ]
+
+    return parsed_data in xmas_matrix
+
+
+class XmasIterator:
+
+    def __init__(self, board: list[list[str]]) -> None:
+        self.board = board
+        self.horizontal_len = len(board[0])
+        self.vertical_len = len(board)
+        self.row_start = 0
+        self.row_end = 3
+        self.vertical_cursor = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self) -> list:
+        """
+        Each step returning a 3x3 box
+
+        :return:
+        """
+        if self.row_end > self.horizontal_len and self.vertical_cursor + 3 >= self.vertical_len:
+            raise StopIteration
+
+        if self.row_end > self.horizontal_len:
+            """move down"""
+            self.row_start = 0
+            self.row_end = 3
+            self.vertical_cursor += 1
+
+        data =  [
+            self.board[self.vertical_cursor][self.row_start:self.row_end],
+            self.board[self.vertical_cursor + 1][self.row_start:self.row_end],
+            self.board[self.vertical_cursor + 2][self.row_start:self.row_end]
+        ]
+
+        self.row_start += 1
+        self.row_end += 1
+
+        return data
+
+
+def proces_xmas_count(data: list[list[str]]) -> int:
+
+    iterator = XmasIterator(data)
+    count = 0
+    while True:
+
+        try:
+            data = next(iterator)
+            result = count_xmas(sanitize_x_mass(data))
+
+            if result:
+                count += 1
+        except StopIteration:
+            return count
+
+
 assert 18 == process_xmas(load_test_intput())
 assert 2549 == process_xmas(load_input())
+assert 9 == proces_xmas_count([[el for el in row] for row in load_test_intput()])
+assert 2003 == proces_xmas_count([[el for el in row] for row in load_input()])
+

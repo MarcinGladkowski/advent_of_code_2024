@@ -1,5 +1,7 @@
+import pytest
+
 from day_4.main import find_horizontal, find_diagonal, find_vertical, process_xmas, parse_diagonals_from_left, \
-    reverse_rows
+    reverse_rows, XmasIterator, sanitize_x_mass, count_xmas, proces_xmas_count
 
 
 def test_find_xmas_vertical():
@@ -75,6 +77,82 @@ def test_count_xmas():
 
     assert process_xmas(test_input) == 18
 
+def test_count_x_mas():
+    test_input = [
+        [".", "M", ".", "S", ".", ".", ".", ".", ".", "."],
+        [".", ".", "A", ".", ".", "M", "S", "M", "S", "."],
+        [".", "M", ".", "S", ".", "M", "A", "A", ".", "."],
+        [".", ".", "A", ".", "A", "S", "M", "S", "M", "."],
+        [".", "M", ".", "S", ".", "M", ".", ".", ".", "."],
+        [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+        ["S", ".", "S", ".", "S", ".", "S", ".", "S", "."],
+        [".", "A", ".", "A", ".", "A", ".", "A", ".", "."],
+        ["M", ".", "M", ".", "M", ".", "M", ".", "M", "."],
+        [".", ".", ".", ".", ".", ".", ".", ".", ".", "."]
+    ]
+
+    assert proces_xmas_count(test_input) == 9
+
+def test_should_return_3_x_3_iterator_on_horizontal_data():
+
+    test_input = [
+        [".", "M", ".", "S"],
+        [".", ".", "A", "."],
+        [".", "M", ".", "S"],
+    ]
+
+    iterator = XmasIterator(board=test_input)
+
+    assert next(iterator) == [
+        [".", "M", "."],
+        [".", ".", "A"],
+        [".", "M", "."],
+    ]
+
+    assert next(iterator) == [
+        ["M", ".", "S"],
+        [".", "A", "."],
+        ["M", ".", "S"],
+    ]
+
+def test_should_return_3_x_3_iterator_on_vertical_data():
+
+    test_input = [
+        [".", "M", "."],
+        [".", ".", "A"],
+        [".", "M", "."],
+        [".", "M", "."],
+    ]
+
+    iterator = XmasIterator(board=test_input)
+
+    assert next(iterator) == [
+        [".", "M", "."],
+        [".", ".", "A"],
+        [".", "M", "."],
+    ]
+
+    assert next(iterator) == [
+        [".", ".", "A"],
+        [".", "M", "."],
+        [".", "M", "."],
+    ]
+
+def test_should_stop_iterating_when_board_finished():
+
+    test_input = [
+        [".", "M", "."],
+        [".", ".", "A"],
+        [".", "M", "."],
+    ]
+
+    iterator = XmasIterator(board=test_input)
+    next(iterator)
+
+    with pytest.raises(StopIteration):
+        next(iterator)
+
+
 def test_parse_diagonals():
 
     test_input = [
@@ -110,3 +188,18 @@ def test_reverse_for_left_parsing():
         ['.', 'M', 'M', '.'],
         ['X', '.', 'S', 'X'],
     ]
+
+
+
+def test_sanitize_data_for_x_mas():
+
+    test_input = [
+        ['M', 'A', 'S'],
+        ['M', 'A', 'S'],
+        ['M', 'A', 'S'],
+    ]
+
+    assert sanitize_x_mass(test_input) == 'M.S.A.M.S'
+
+def test_found_xmas():
+    assert count_xmas('M.S.A.M.S')
