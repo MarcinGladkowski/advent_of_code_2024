@@ -1,5 +1,7 @@
 import re
 
+from input_loader import load_test_intput, load_input
+
 
 def find_vertical(data_set: list[list[str]]) -> int:
     """
@@ -66,3 +68,6 @@ def process_xmas(data: list[list[str]]) -> int:
 
 
     return horizontal_count + vertical_count + diagonals_from_left + diagonals_from_right
+
+assert 18 == process_xmas(load_test_intput())
+assert 2549 == process_xmas(load_input())
