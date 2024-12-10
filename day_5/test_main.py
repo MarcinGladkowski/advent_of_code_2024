@@ -1,4 +1,4 @@
-from day_5.main import Rule, PagesUpdate, Rules
+from day_5.main import Rule, PagesUpdate, Rules, page_update_correct
 
 raw_test_rules = [
     '47|53',
@@ -34,12 +34,21 @@ def test_find_related_rules():
 
 def test_find_rules_to_check():
     """
-    75 =  75|47, 75|61, 75|53, and 75|29. = 4
-    47 = (75|47) 47|61, 47|53,  47|29. = 3
-    61 = (75|61  47|61) (61|53  61|29). = 2
-    53 = (53|29). = 1
-    29 = []
-    find by fist number and rest set
+    75 = (75|47), (75|61), 75|53, (75|29) = 4
+    47 = (75|47) (47|61), (47|53), (47|29) = 3
+    61 = (75|61  47|61) (61|53  61|29) = 2
+    53 = (53|29) = 1
+    29 = 0
     """
-
     assert len(test_rules.find_rules(PagesUpdate.from_str('75,47,61,53,29'))) == 10
+
+def test_update_is_correct_by_rule():
+    assert PagesUpdate.from_str('75,47,61,53,29').is_rule_correct(Rule(75, 61))
+    assert PagesUpdate.from_str('61,47,75,53,29').is_rule_correct(Rule(75, 61)) == False
+
+
+def test_update_is_fully_correct_for_rules():
+    assert page_update_correct(PagesUpdate.from_str('75,47,61,53,29'), test_rules)
+    assert page_update_correct(PagesUpdate.from_str('75,97,47,61,53'), test_rules) == False
+    assert page_update_correct(PagesUpdate.from_str('61,13,29'), test_rules) == False
+    assert page_update_correct(PagesUpdate.from_str('97,13,75,29,47'), test_rules) == False

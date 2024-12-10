@@ -37,6 +37,9 @@ class PagesUpdate:
     def get_pages(self) -> set[int]:
         return set(self.pages)
 
+    def is_rule_correct(self, rule: Rule) -> bool:
+        return self.pages.index(rule.first) < self.pages.index(rule.second)
+
 class Rules:
 
     def __init__(self):
@@ -63,3 +66,12 @@ class Rules:
                 matching_rules.add(rule)
 
         return matching_rules
+
+def page_update_correct(pages: PagesUpdate, rules: Rules) -> bool:
+    rules_to_test = rules.find_rules(pages)
+
+    for rule in rules_to_test:
+        if pages.is_rule_correct(rule) is False:
+            return False
+
+    return True
