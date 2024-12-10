@@ -104,8 +104,6 @@ def calculate(data: tuple[Rules, list[str]]) -> int:
 
     return result
 
+"""Part 1"""
 assert 143 == calculate(parse_data_to_rules_and_updates(load_test_intput()))
-
-print(
-    calculate(parse_data_to_rules_and_updates(load_input()))
-)
+assert 5166 == calculate(parse_data_to_rules_and_updates(load_input()))
