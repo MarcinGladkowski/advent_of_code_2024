@@ -1,5 +1,7 @@
 from typing import Any
 
+from input_loader import load_input, load_test_intput
+
 
 class Rule:
 
@@ -31,7 +33,8 @@ class PagesUpdate:
 
     @classmethod
     def from_str(cls, data: str):
-        pages = list(map(lambda x: int(x), data.split(",")))
+        filtered = list(filter(lambda x: len(x) > 0, data.split(",")))
+        pages = list(map(lambda x: int(x), filtered))
         return cls(pages)
 
     def get_pages(self) -> set[int]:
@@ -39,6 +42,10 @@ class PagesUpdate:
 
     def is_rule_correct(self, rule: Rule) -> bool:
         return self.pages.index(rule.first) < self.pages.index(rule.second)
+
+    def result(self) -> int:
+        return self.pages[int(len(self.pages) / 2)]
+
 
 class Rules:
 
@@ -75,3 +82,30 @@ def page_update_correct(pages: PagesUpdate, rules: Rules) -> bool:
             return False
 
     return True
+
+
+def parse_data_to_rules_and_updates(data: list[str]):
+    data_rules = Rules.from_rules_str(data[0:data.index('')])
+    pages_updates = data[data.index(''):len(data)]
+    return data_rules, pages_updates
+
+
+def calculate(data: tuple[Rules, list[str]]) -> int:
+    result = 0
+    rules = data[0]
+
+    for update in data[1]:
+        page_update = PagesUpdate.from_str(update)
+        if page_update.pages == []:
+            continue
+
+        if page_update_correct(page_update, rules):
+            result += page_update.result()
+
+    return result
+
+assert 143 == calculate(parse_data_to_rules_and_updates(load_test_intput()))
+
+print(
+    calculate(parse_data_to_rules_and_updates(load_input()))
+)

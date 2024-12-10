@@ -1,4 +1,4 @@
-from day_5.main import Rule, PagesUpdate, Rules, page_update_correct
+from day_5.main import Rule, PagesUpdate, Rules, page_update_correct, calculate
 
 raw_test_rules = [
     '47|53',
@@ -22,6 +22,15 @@ raw_test_rules = [
     '47|29',
     '75|13',
     '53|13',
+]
+
+test_page_updates = [
+    '75,47,61,53,29',
+    '97,61,53,29,13',
+    '75,29,13',
+    '75,97,47,61,53',
+    '61,13,29',
+    '97,13,75,29,47'
 ]
 
 test_rules = Rules.from_rules_str(raw_test_rules)
@@ -52,3 +61,8 @@ def test_update_is_fully_correct_for_rules():
     assert page_update_correct(PagesUpdate.from_str('75,97,47,61,53'), test_rules) == False
     assert page_update_correct(PagesUpdate.from_str('61,13,29'), test_rules) == False
     assert page_update_correct(PagesUpdate.from_str('97,13,75,29,47'), test_rules) == False
+
+def test_calculate():
+    assert calculate(
+        (test_rules, test_page_updates),
+    ) == 143
