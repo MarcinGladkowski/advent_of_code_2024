@@ -1,4 +1,4 @@
-from day_5.main import Rule, PagesUpdate, Rules, page_update_correct, calculate
+from day_5.main import Rule, PagesUpdate, Rules, page_update_correct, calculate, fix_page_update, calculate_fixed
 
 raw_test_rules = [
     '47|53',
@@ -66,3 +66,15 @@ def test_calculate():
     assert calculate(
         (test_rules, test_page_updates),
     ) == 143
+
+
+def test_equals_two_pages():
+    assert PagesUpdate.from_str('97,13,75,29,47') == PagesUpdate.from_str('97,13,75,29,47')
+
+def test_fix_page_update():
+    assert fix_page_update(PagesUpdate.from_str('97,13,75,29,47'), test_rules) == PagesUpdate.from_str('97,75,47,29,13')
+
+def test_calculate_fixed():
+    assert calculate_fixed(
+        (test_rules, test_page_updates),
+    ) == 123

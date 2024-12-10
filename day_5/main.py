@@ -1,5 +1,3 @@
-from typing import Any
-
 from input_loader import load_input, load_test_intput
 
 
@@ -46,6 +44,8 @@ class PagesUpdate:
     def result(self) -> int:
         return self.pages[int(len(self.pages) / 2)]
 
+    def __eq__(self, other) -> bool:
+        return self.pages == other.pages
 
 class Rules:
 
@@ -74,6 +74,18 @@ class Rules:
 
         return matching_rules
 
+    def count_by_first_occurence(self):
+        count_map = {}
+        for rule in self.rules:
+            if count_map.get(rule.first) is None:
+                count_map[rule.first] = 1
+                continue
+
+            count_map[rule.first] += 1
+
+        return count_map
+
+
 def page_update_correct(pages: PagesUpdate, rules: Rules) -> bool:
     rules_to_test = rules.find_rules(pages)
 
@@ -83,6 +95,29 @@ def page_update_correct(pages: PagesUpdate, rules: Rules) -> bool:
 
     return True
 
+def fix_page_update(pages: PagesUpdate, rules: Rules):
+    """
+        Count by the first number - it's an index in reverse order
+    """
+    rules_to_test = rules.find_rules(pages)
+
+    rules_to_count = Rules()
+    for rule in rules_to_test:
+        rules_to_count.add_rule(rule)
+
+    indexes = rules_to_count.count_by_first_occurence()
+
+    result = [None for _ in range(len(indexes.values()))]
+    for key, value in indexes.items():
+        result.insert(value, key)
+
+    result.reverse()
+    result = list(filter(lambda x: x is not None, result))
+
+    """Set last missing element"""
+    missing_element = set(pages.pages).difference(set(result))
+    result.append(missing_element.pop())
+    return PagesUpdate.from_str(','.join(map(lambda x: str(x), result)))
 
 def parse_data_to_rules_and_updates(data: list[str]):
     data_rules = Rules.from_rules_str(data[0:data.index('')])
@@ -103,6 +138,22 @@ def calculate(data: tuple[Rules, list[str]]) -> int:
             result += page_update.result()
 
     return result
+
+def calculate_fixed(data: tuple[Rules, list[str]]) -> int:
+    result = 0
+    rules = data[0]
+
+    for update in data[1]:
+        page_update = PagesUpdate.from_str(update)
+        if page_update.pages == []:
+            continue
+
+        if page_update_correct(page_update, rules) is False:
+            fixed = fix_page_update(page_update, rules)
+            result += fixed.result()
+
+    return result
+
 
 """Part 1"""
 assert 143 == calculate(parse_data_to_rules_and_updates(load_test_intput()))
