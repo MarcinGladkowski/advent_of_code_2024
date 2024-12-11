@@ -32,6 +32,12 @@ class Cursor:
     def __eq__(self, other):
         return self.y == other.y and self.x == other.x
 
+    def __str__(self):
+        return f'({self.y}, {self.x})'
+
+    def __hash__(self):
+        return hash(str(self))
+
 class GuardWalker:
 
     def __init__(self, lab_map: list[list[str]]) -> None:
@@ -49,39 +55,39 @@ class GuardWalker:
 
     def __next__(self) -> "GuardWalker":
 
-        position = self.position(self.cursor)
+        cursor_direction = self.cursor.direction
 
         try:
-            if Move.UP.value == position and self.is_allowed(self.cursor.up()):
+            if Move.UP.value == cursor_direction and self.is_allowed(self.cursor.up()):
                 self.cursor = self.cursor.right()
                 self.steps += 1
                 return self
 
-            if Move.DOWN.value == position and self.is_allowed(self.cursor.down()):
+            if Move.DOWN.value == cursor_direction and self.is_allowed(self.cursor.down()):
                 self.cursor = self.cursor.left()
                 self.steps += 1
                 return self
 
-            if Move.LEFT.value == position and self.is_allowed(self.cursor.left()):
+            if Move.LEFT.value == cursor_direction and self.is_allowed(self.cursor.left()):
                 self.cursor = self.cursor.up()
                 self.steps += 1
                 return self
 
-            if Move.RIGHT.value == position and self.is_allowed(self.cursor.right()):
+            if Move.RIGHT.value == cursor_direction and self.is_allowed(self.cursor.right()):
                 self.cursor = self.cursor.down()
                 self.steps += 1
                 return self
 
-            if Move.UP.value == position:
+            if Move.UP.value == cursor_direction:
                 self.cursor = self.cursor.up()
 
-            if Move.DOWN.value == position:
+            if Move.DOWN.value == cursor_direction:
                 self.cursor = self.cursor.down()
 
-            if Move.LEFT.value == position:
+            if Move.LEFT.value == cursor_direction:
                 self.cursor = self.cursor.left()
 
-            if Move.RIGHT.value == position:
+            if Move.RIGHT.value == cursor_direction:
                 self.cursor = self.cursor.right()
 
             self.steps += 1
@@ -97,3 +103,14 @@ class GuardWalker:
             return self.lab_map[cursor.y][cursor.x] == obstacle
         except IndexError:
             raise RuntimeError('out of map!')
+
+    def run(self) -> int:
+        walker = self
+        visited = [self.initial_position()]
+        while True:
+            try:
+                walker = next(walker)
+                visited.append(walker.cursor)
+            except StopIteration:
+                # eliminate duplicates
+                return len(set(visited))

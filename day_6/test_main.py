@@ -89,3 +89,11 @@ def test_finish_when_goes_out_of_map():
         next(GuardWalker([['>'],]))
         next(GuardWalker([['<'],]))
         next(GuardWalker([['v'],]))
+
+def test_count_steps_on_9_cells_map():
+    walker = GuardWalker([
+        ['#','.','.'],
+        ['.','.','#'],
+        ['^','.','.'],
+    ])
+    assert walker.run() == 3
