@@ -107,12 +107,9 @@ def fix_page_update(pages: PagesUpdate, rules: Rules):
 
     indexes = rules_to_count.count_by_first_occurence()
 
-    result = [None for _ in range(len(indexes.values()))]
-    for key, value in indexes.items():
-        result.insert(value, key)
-
-    result.reverse()
-    result = list(filter(lambda x: x is not None, result))
+    result = {value: key for key, value in indexes.items()}
+    result = dict(sorted(result.items(), reverse=True))
+    result = list(result.values())
 
     """Set last missing element"""
     missing_element = set(pages.pages).difference(set(result))
@@ -142,8 +139,9 @@ def calculate(data: tuple[Rules, list[str]]) -> int:
 def calculate_fixed(data: tuple[Rules, list[str]]) -> int:
     result = 0
     rules = data[0]
+    pages_updates = data[1]
 
-    for update in data[1]:
+    for index, update in enumerate(pages_updates):
         page_update = PagesUpdate.from_str(update)
         if page_update.pages == []:
             continue
@@ -158,3 +156,6 @@ def calculate_fixed(data: tuple[Rules, list[str]]) -> int:
 """Part 1"""
 assert 143 == calculate(parse_data_to_rules_and_updates(load_test_intput()))
 assert 5166 == calculate(parse_data_to_rules_and_updates(load_input()))
+"""Part 2"""
+assert 123 == calculate_fixed(parse_data_to_rules_and_updates(load_test_intput()))
+assert 4679 == calculate_fixed(parse_data_to_rules_and_updates(load_input()))
