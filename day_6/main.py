@@ -1,4 +1,6 @@
+from copy import deepcopy
 from enum import Enum
+from pprint import pprint
 
 
 class Move(Enum):
@@ -9,6 +11,9 @@ class Move(Enum):
 
 obstacle = '#'
 
+
+class LoopDetectedError(RuntimeError):
+    pass
 
 class Cursor:
 
@@ -58,22 +63,22 @@ class GuardWalker:
         cursor_direction = self.cursor.direction
 
         try:
-            if Move.UP.value == cursor_direction and self.is_allowed(self.cursor.up()):
+            if Move.UP.value == cursor_direction and self.is_obstacle(self.cursor.up()):
                 self.cursor = self.cursor.right()
                 self.steps += 1
                 return self
 
-            if Move.DOWN.value == cursor_direction and self.is_allowed(self.cursor.down()):
+            if Move.DOWN.value == cursor_direction and self.is_obstacle(self.cursor.down()):
                 self.cursor = self.cursor.left()
                 self.steps += 1
                 return self
 
-            if Move.LEFT.value == cursor_direction and self.is_allowed(self.cursor.left()):
+            if Move.LEFT.value == cursor_direction and self.is_obstacle(self.cursor.left()):
                 self.cursor = self.cursor.up()
                 self.steps += 1
                 return self
 
-            if Move.RIGHT.value == cursor_direction and self.is_allowed(self.cursor.right()):
+            if Move.RIGHT.value == cursor_direction and self.is_obstacle(self.cursor.right()):
                 self.cursor = self.cursor.down()
                 self.steps += 1
                 return self
@@ -98,7 +103,7 @@ class GuardWalker:
     def position(self, cursor: Cursor) -> str:
         return self.lab_map[cursor.y][cursor.x]
 
-    def is_allowed(self, cursor: Cursor) -> bool:
+    def is_obstacle(self, cursor: Cursor) -> bool:
         try:
             return self.lab_map[cursor.y][cursor.x] == obstacle
         except IndexError:
@@ -114,3 +119,55 @@ class GuardWalker:
             except StopIteration:
                 # eliminate duplicates
                 return len(set(visited))
+
+    def detect_loop(self):
+        """
+        We can try to detect looping by counting occurrence
+        Statement more than > 10 occurences
+        :return:
+        """
+        walker = self
+        visited = {
+            self.initial_position().__str__(): 1
+        }
+        while True:
+            try:
+                walker = next(walker)
+                cursor_hash = walker.cursor.__str__()
+                if visited.get(cursor_hash) is None:
+                    visited[cursor_hash] = 1
+                else:
+                    visited[cursor_hash] += 1
+
+                if len(list(filter(lambda v: v >= 10, visited.values()))) > 3:
+                    """Probably we got loop. Smallest loop has 4 elements"""
+                    raise LoopDetectedError
+
+            except StopIteration:
+                raise StopIteration
+
+    def find_loops(self) -> int:
+        """Modify maps"""
+        loops = 0
+        iterator = 0
+        for row_index, row in enumerate(self.lab_map):
+            for col_index, col in enumerate(row):
+                walking_map = deepcopy(self.lab_map)
+                if walking_map[row_index][col_index] == '.':
+                    iterator += 1
+                    print(f"Test nr: {iterator} | ({row_index}:{col_index})")
+
+                    walking_map[row_index][col_index] = obstacle
+                    try:
+                        GuardWalker(walking_map).detect_loop()
+                    except LoopDetectedError:
+                        # print('\n')
+                        # pprint(walking_map)
+                        loops += 1
+                        pprint(loops)
+                        continue
+                    except StopIteration:
+                        continue
+
+        return loops
+

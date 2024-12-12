@@ -1,6 +1,6 @@
 import pytest
 
-from day_6.main import GuardWalker, Cursor
+from day_6.main import GuardWalker, Cursor, LoopDetectedError
 
 
 def test_found_initial_position():
@@ -96,4 +96,51 @@ def test_count_steps_on_9_cells_map():
         ['.','.','#'],
         ['^','.','.'],
     ])
-    assert walker.run() == 3
+    assert walker.run() == 4
+
+
+def test_count_steps_with_turn_around():
+    walker = GuardWalker([
+        ['#','.'],
+        ['.','#'],
+        ['^','.'],
+        ['.','.'],
+        ['.','.'],
+    ])
+    assert walker.run() == 5
+
+def test_should_recognize_loop():
+    walker = GuardWalker([
+        ['.','#','.','.'],
+        ['.','.','.','#'],
+        ['#','^','.','.'],
+        ['.','.','#','.'],
+    ])
+
+    with pytest.raises(LoopDetectedError):
+        walker.detect_loop()
+
+
+def test_should_not_recognize_loop():
+    walker = GuardWalker([
+        ['.', '#', '.', '.'],
+        ['.', '.', '.', '#'],
+        ['.', '.', '.', '#'],
+        ['.', '^', '#', '.'],
+        ['.', '.', '.', '.'],
+    ])
+
+    with pytest.raises(StopIteration):
+        walker.detect_loop()
+
+
+def test_should_figure_out_loop():
+    walker = GuardWalker([
+        ['.','#','.','.'],
+        ['.','.','.','#'],
+        ['.','^','.','.'],
+        ['.','.','#','.'],
+    ])
+
+    assert walker.find_loops() == 1
+
