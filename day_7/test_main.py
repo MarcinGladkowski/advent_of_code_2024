@@ -15,12 +15,12 @@ def test_determine_operators_combination_for_3_operators():
     """
     assert len(determine_operators_combinations(['*', '+'], 3)) == 8
 
-
 def test_execute_combination():
     assert execute_combination('+*+', [11,6,16,20]) == 292
 
 def test_determine_by_multiply():
     assert 190 == determine_combination(190, [10, 19])
+    assert 9688755 == determine_combination(9688755, [13,87,278,4,98,5,62,87])
 
 def test_generate_result_for_set():
     test_data = [

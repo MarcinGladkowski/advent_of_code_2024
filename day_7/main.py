@@ -4,6 +4,8 @@ import itertools
 def determine_operators_combinations(operators: list, combinations_len) -> set[str]:
     """
         Works for two elements
+
+        Should work as iterator, generating 2**12 is memory consumption
     """
     combinations = []
     for number in range(combinations_len + 1):
@@ -31,7 +33,7 @@ def determine_combination(result: int, numbers: [int]) -> [int]:
     :param numbers:
     :return: int > 0 ok, = 0 not determined
     """
-    combinations = determine_operators_combinations(['*', '+'], len(numbers))
+    combinations = determine_operators_combinations(['*', '+'], len(numbers)-1)
 
     for combination in combinations:
         if result == execute_combination(combination, numbers):
@@ -55,4 +57,9 @@ def execute_combination(combination: str, numbers: list[int]) -> int:
 
 
 def calculate(data: list) -> int:
-    return sum([determine_combination(data[0], data[1]) for data in data])
+    result = 0
+    for data in data:
+        result += determine_combination(data[0], data[1])
+        print(f"Determine combination for: {data[0]} | result: {result}")
+
+    return result
