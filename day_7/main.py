@@ -1,13 +1,14 @@
 import itertools
 from functools import cache
 
-# @cache
 def determine_operators_combinations(operators: list, combinations_len) -> set[str]:
     """
         Works for two elements
 
         Should work as iterator, generating 2**12 is memory consumption
     """
+    return set(list(itertools.product(operators, repeat=combinations_len)))
+
     combinations = []
     for number in range(combinations_len + 1):
         base_combination = operators[0] * combinations_len
@@ -20,7 +21,6 @@ def determine_operators_combinations(operators: list, combinations_len) -> set[s
     result = set(combinations)
     for combination in combinations:
         combined = set((itertools.permutations(combination, combinations_len)))
-        print(len)
         for permuted in combined:
             result.add(''.join(permuted))
 
@@ -31,7 +31,7 @@ def load_combinations(number: int) -> list[str]:
     with open(f'{number}_length_combinations.txt', 'r') as f:
         return f.read().splitlines()
 
-def determine_combination(result: int, numbers: [int]) -> [int]:
+def determine_combination(result: int, numbers: [int], operators: list) -> [int]:
     """
     add operations (+)
     multiply operations (*)
@@ -40,9 +40,9 @@ def determine_combination(result: int, numbers: [int]) -> [int]:
     :param numbers:
     :return: int > 0 ok, = 0 not determined
     """
-    #combinations = determine_operators_combinations(['*', '+'], len(numbers)-1)
+    combinations = determine_operators_combinations(operators, len(numbers)-1)
     # load combinations from file
-    combinations = load_combinations(len(numbers))
+    #combinations = load_combinations(len(numbers))
 
     for combination in combinations:
         if result == execute_combination(combination, numbers):
@@ -65,10 +65,10 @@ def execute_combination(combination: str, numbers: list[int]) -> int:
     return result
 
 
-def calculate(data: list) -> int:
+def calculate(data: list, operators: list) -> int:
     result = 0
     for data in data:
-        result += determine_combination(data[0], data[1])
+        result += determine_combination(data[0], data[1], operators)
         #print(f"Determine combination for: {data[0]} | result: {result}")
 
     return result
