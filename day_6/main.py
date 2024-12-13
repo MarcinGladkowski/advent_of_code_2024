@@ -120,54 +120,5 @@ class GuardWalker:
                 # eliminate duplicates
                 return len(set(visited))
 
-    def detect_loop(self):
-        """
-        We can try to detect looping by counting occurrence
-        Statement more than > 10 occurences
-        :return:
-        """
-        walker = self
-        visited = {
-            self.initial_position().__str__(): 1
-        }
-        while True:
-            try:
-                walker = next(walker)
-                cursor_hash = walker.cursor.__str__()
-                if visited.get(cursor_hash) is None:
-                    visited[cursor_hash] = 1
-                else:
-                    visited[cursor_hash] += 1
 
-                if len(list(filter(lambda v: v >= 10, visited.values()))) > 3:
-                    """Probably we got loop. Smallest loop has 4 elements"""
-                    raise LoopDetectedError
-
-            except StopIteration:
-                raise StopIteration
-
-    def find_loops(self) -> int:
-        """Modify maps"""
-        loops = 0
-        iterator = 0
-        for row_index, row in enumerate(self.lab_map):
-            for col_index, col in enumerate(row):
-                walking_map = deepcopy(self.lab_map)
-                if walking_map[row_index][col_index] == '.':
-                    iterator += 1
-                    print(f"Test nr: {iterator} | ({row_index}:{col_index})")
-
-                    walking_map[row_index][col_index] = obstacle
-                    try:
-                        GuardWalker(walking_map).detect_loop()
-                    except LoopDetectedError:
-                        # print('\n')
-                        # pprint(walking_map)
-                        loops += 1
-                        pprint(loops)
-                        continue
-                    except StopIteration:
-                        continue
-
-        return loops
 

@@ -8,3 +8,4 @@ task_data = [[i for i in x] for x in load_input()]
 
 # 2383 too high
 print(GuardWalker(task_data).find_loops())
+
