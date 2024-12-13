@@ -69,6 +69,6 @@ def calculate(data: list) -> int:
     result = 0
     for data in data:
         result += determine_combination(data[0], data[1])
-        print(f"Determine combination for: {data[0]} | result: {result}")
+        #print(f"Determine combination for: {data[0]} | result: {result}")
 
     return result
