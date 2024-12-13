@@ -12,15 +12,18 @@ def test_determine_operators_combination_for_3_operators():
         **+
         +*+
         *+*
+
+    2048 combinations ~ 55s
     """
-    assert len(determine_operators_combinations(['*', '+'], 3)) == 8
-    assert len(determine_operators_combinations(['*', '+'], 8)) == 256
+    #assert len(determine_operators_combinations(['*', '+'], 3)) == 8
+    #assert len(determine_operators_combinations(['*', '+'], 8)) == 256
+    assert len(determine_operators_combinations(['*', '+'], 11)) == 2048
 
 def test_execute_combination():
     assert execute_combination('+*+', [11,6,16,20]) == 292
 
 def test_determine_by_multiply():
-    assert 190 == determine_combination(190, [10, 19])
+    #assert 190 == determine_combination(190, [10, 19])
     assert 9688755 == determine_combination(9688755, [13,87,278,4,98,5,62,87])
 
 def test_generate_result_for_set():

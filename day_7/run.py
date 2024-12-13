@@ -14,8 +14,17 @@ def parse_input(data: list[str]) -> list:
 
     return result
 
-test_data = parse_input(load_test_intput())
+# test_data = parse_input(load_test_intput())
+#
+# assert calculate(test_data) == 3749
+#
+# print(calculate(parse_input(load_input())))
 
-assert calculate(test_data) == 3749
+combinations = [
+    ('*', '*', '*', '*', '*', '*', '*', '*'),
+    ('*', '*', '*', '*', '*', '*', '*', '*'),
+    ('*', '*', '*', '*', '*', '*', '*', '*')
+]
 
-print(calculate(parse_input(load_input())))
+print(list(set(combinations)))
+

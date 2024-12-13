@@ -1,6 +1,7 @@
 import itertools
+from functools import cache
 
-
+# @cache
 def determine_operators_combinations(operators: list, combinations_len) -> set[str]:
     """
         Works for two elements
@@ -18,11 +19,17 @@ def determine_operators_combinations(operators: list, combinations_len) -> set[s
 
     result = set(combinations)
     for combination in combinations:
-        combined = list(itertools.permutations(combination, combinations_len))
+        combined = set((itertools.permutations(combination, combinations_len)))
+        print(len)
         for permuted in combined:
             result.add(''.join(permuted))
 
     return result
+
+
+def load_combinations(number: int) -> list[str]:
+    with open(f'{number}_length_combinations.txt', 'r') as f:
+        return f.read().splitlines()
 
 def determine_combination(result: int, numbers: [int]) -> [int]:
     """
@@ -33,7 +40,9 @@ def determine_combination(result: int, numbers: [int]) -> [int]:
     :param numbers:
     :return: int > 0 ok, = 0 not determined
     """
-    combinations = determine_operators_combinations(['*', '+'], len(numbers)-1)
+    #combinations = determine_operators_combinations(['*', '+'], len(numbers)-1)
+    # load combinations from file
+    combinations = load_combinations(len(numbers))
 
     for combination in combinations:
         if result == execute_combination(combination, numbers):
