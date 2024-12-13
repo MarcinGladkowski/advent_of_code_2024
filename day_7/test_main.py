@@ -14,6 +14,7 @@ def test_determine_operators_combination_for_3_operators():
         *+*
     """
     assert len(determine_operators_combinations(['*', '+'], 3)) == 8
+    assert len(determine_operators_combinations(['*', '+'], 8)) == 256
 
 def test_execute_combination():
     assert execute_combination('+*+', [11,6,16,20]) == 292
