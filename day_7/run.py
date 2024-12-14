@@ -16,3 +16,6 @@ def parse_input(data: list[str]) -> list:
 assert calculate(parse_input(load_test_intput()), ['*', '+']) == 3749
 assert calculate(parse_input(load_input()), ['*', '+']) == 2654749936343
 
+assert calculate(parse_input(load_test_intput()), ['*', '+', '||']) == 11387
+assert calculate(parse_input(load_input()), ['*', '+', '||']) == 124060392153684
+
