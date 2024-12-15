@@ -18,6 +18,12 @@ class AntennasPair:
     def calculate_antinodes(self) -> list[tuple[int]]:
         """
             Based on two points we can find out expected positions for anti nodes
+
+            We can define 4 main positions:
+            a -> a (fully horizontal)
+            a -> a (fully vertical)
+            a -> a (diagonal from left top to right bottom)
+            a -> a (diagonal from right top to left bottom)
         """
         vertical_distance = self.second_antenna.y - self.first_antenna.y
         horizontal_distance = self.second_antenna.x - self.first_antenna.x
