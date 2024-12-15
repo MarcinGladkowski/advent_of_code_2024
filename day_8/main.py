@@ -4,6 +4,7 @@ class AntennaPoint:
         self.x = x
         self.frequency = frequency
 
+
 class AntennasPair:
     def __init__(self, first_antenna: AntennaPoint, second_antenna: AntennaPoint = None):
         self.first_antenna = first_antenna
@@ -15,7 +16,7 @@ class AntennasPair:
     def set_second_point(self, antenna_point: AntennaPoint):
         self.second_antenna = antenna_point
 
-    def calculate_antinodes(self) -> list[tuple[int]]:
+    def calculate_antinodes(self) -> list[tuple[int, int]]:
         """
             Based on two points we can find out expected positions for anti nodes
 
@@ -25,20 +26,82 @@ class AntennasPair:
             a -> a (diagonal from left top to right bottom)
             a -> a (diagonal from right top to left bottom)
         """
-        vertical_distance = self.second_antenna.y - self.first_antenna.y
-        horizontal_distance = self.second_antenna.x - self.first_antenna.x
+        nodes_strategies = [
+            LeftToRightAntiNodes,
+            RightToLeftAntiNodes,
+            HorizontallyAntiNodes,
+            VerticallyAntiNodes,
+        ]
 
-        top_left_node = (
-            self.first_antenna.y - vertical_distance,
-            self.first_antenna.x - horizontal_distance,
-        )
+        for node_strategy in nodes_strategies:
+            if node_strategy.is_applicable(self):
+                return node_strategy.calculate_anti_nodes(self)
 
-        right_bottom_node = (
-            self.second_antenna.y + vertical_distance,
-            self.second_antenna.x + horizontal_distance,
-        )
+        raise RuntimeError("Any calculation found")
 
-        return [top_left_node, right_bottom_node]
+
+class LeftToRightAntiNodes:
+
+    @staticmethod
+    def is_applicable(antenna_pair: AntennasPair) -> bool:
+        return antenna_pair.second_antenna.y > antenna_pair.first_antenna.y and antenna_pair.first_antenna.x < antenna_pair.second_antenna.x
+
+    @staticmethod
+    def calculate_anti_nodes(antennas_pair: AntennasPair) -> list[tuple[int, int]]:
+        vertical_distance = antennas_pair.second_antenna.y - antennas_pair.first_antenna.y
+        horizontal_distance = antennas_pair.second_antenna.x - antennas_pair.first_antenna.x
+
+        return [
+            (antennas_pair.first_antenna.y - vertical_distance, antennas_pair.first_antenna.x - horizontal_distance),
+            (antennas_pair.second_antenna.y + vertical_distance, antennas_pair.second_antenna.x + horizontal_distance)
+        ]
+
+class RightToLeftAntiNodes:
+
+    @staticmethod
+    def is_applicable(antenna_pair: AntennasPair) -> bool:
+        return antenna_pair.second_antenna.y > antenna_pair.first_antenna.y and antenna_pair.first_antenna.x > antenna_pair.second_antenna.x
+
+    @staticmethod
+    def calculate_anti_nodes(antennas_pair: AntennasPair) -> list[tuple[int, int]]:
+        vertical_distance = antennas_pair.second_antenna.y - antennas_pair.first_antenna.y
+        horizontal_distance = antennas_pair.first_antenna.x - antennas_pair.second_antenna.x
+
+        return [
+            (antennas_pair.first_antenna.y - vertical_distance, antennas_pair.first_antenna.x + horizontal_distance),
+            (antennas_pair.second_antenna.y + vertical_distance, antennas_pair.second_antenna.x - horizontal_distance)
+        ]
+
+
+class HorizontallyAntiNodes:
+
+    @staticmethod
+    def is_applicable(antenna_pair: AntennasPair) -> bool:
+        return antenna_pair.second_antenna.y == antenna_pair.first_antenna.y
+
+    @staticmethod
+    def calculate_anti_nodes(antennas_pair: AntennasPair) -> list[tuple[int, int]]:
+        horizontal_distance = antennas_pair.second_antenna.x - antennas_pair.first_antenna.x
+
+        return [
+            (0, antennas_pair.first_antenna.x - horizontal_distance),
+            (0, antennas_pair.second_antenna.x + horizontal_distance)
+        ]
+
+class VerticallyAntiNodes:
+
+    @staticmethod
+    def is_applicable(antenna_pair: AntennasPair) -> bool:
+        return antenna_pair.second_antenna.x == antenna_pair.first_antenna.x
+
+    @staticmethod
+    def calculate_anti_nodes(antennas_pair: AntennasPair) -> list[tuple[int, int]]:
+        vertical_distance = antennas_pair.second_antenna.y - antennas_pair.first_antenna.y
+
+        return [
+            (antennas_pair.first_antenna.y - vertical_distance, 0),
+            (antennas_pair.second_antenna.y + vertical_distance, 0)
+        ]
 
 def detect_nodes(area: list[list[str]]):
     """
