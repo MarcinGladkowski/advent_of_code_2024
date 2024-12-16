@@ -1,8 +1,15 @@
+import itertools
+from pprint import pprint
+
+
 class AntennaPoint:
     def __init__(self, y: int, x: int, frequency: str):
         self.y = y
         self.x = x
         self.frequency = frequency
+
+    def __str__(self):
+        return f"{self.y}:{self.x}"
 
 
 class AntennasPair:
@@ -103,10 +110,29 @@ class VerticallyAntiNodes:
             (antennas_pair.second_antenna.y + vertical_distance, 0)
         ]
 
-def detect_nodes(area: list[list[str]]):
+def detect_nodes(area: list[list[str]]) -> list:
     """
        Nodes are created only for two antennas with the same letter [a-z][A-Z][0-9]] on the same line
        diagonal, vertical, horizontal ?
     """
+    return []
 
-    pass
+def find_pairs(area: list[list[str]]) -> list[AntennasPair]:
+
+    for y_index, row in enumerate(area):
+        for x_index, value in enumerate(row):
+            pass
+
+    return []
+
+
+
+combinations = itertools.combinations([
+    AntennaPoint(0, 1, 'a'),
+    AntennaPoint(0, 2, 'a'),
+    AntennaPoint(0, 3, 'a'),
+    AntennaPoint(0, 4, 'a')
+], 2)
+
+
+pprint(list(combinations))
