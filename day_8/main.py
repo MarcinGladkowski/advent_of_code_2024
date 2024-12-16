@@ -1,4 +1,5 @@
 import itertools
+from email.feedparser import boundaryendRE
 from pprint import pprint
 
 
@@ -64,6 +65,9 @@ class LeftToRightAntiNodes:
     def calculate_anti_nodes(antennas_pair: AntennasPair) -> list[tuple[int, int]]:
         vertical_distance = antennas_pair.second_antenna.y - antennas_pair.first_antenna.y
         horizontal_distance = antennas_pair.second_antenna.x - antennas_pair.first_antenna.x
+
+        (antennas_pair.second_antenna.y,
+         antennas_pair.second_antenna.x)
 
         return [
             (antennas_pair.first_antenna.y - vertical_distance, antennas_pair.first_antenna.x - horizontal_distance),
@@ -161,9 +165,11 @@ def combinations(area: list) -> dict[str, set[AntennasPair]]:
     frequency_combinations = {}
 
     for key, value in antennas_points.items():
-        frequency_combinations[key] = {AntennasPair.from_tuple(combination) for combination in list(itertools.combinations(value, 2))}
+        frequency_combinations[key] = {AntennasPair.from_tuple(combination) for combination in
+                                       list(itertools.combinations(value, 2))}
 
     return frequency_combinations
+
 
 def detect_nodes(area: list[list[str]]) -> list:
     """
@@ -193,3 +199,29 @@ def write_nodes_on_area(area: list, nodes: list) -> list[str]:
     for node in nodes:
         area[node[0]][node[1]] = '#'
     return area
+
+
+# class StepIterator:
+#
+#     def __init__(
+#             self,
+#             initial_point: tuple,
+#             boundaries: tuple,
+#             antennas_pair: AntennasPair,
+#             vertical_step: int = 0,
+#             horizontal_step: int = 0
+#     ) -> None:
+#         self.initial_point = initial_point,
+#         self.boundaries = boundaries,
+#         self.antennas_pair = antennas_pair,
+#         self.horizontal_step = horizontal_step
+#         self.vertical_step = vertical_step,
+#
+#     def __iter__(self):
+#
+#         (
+#             antennas_pair.second_antenna.y + vertical_distance,
+#             antennas_pair.second_antenna.x + horizontal_distance
+#         )
+#
+#         while True:
