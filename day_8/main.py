@@ -175,6 +175,10 @@ def detect_nodes(area: list[list[str]]) -> list:
         for pair in antenna_pairs:
             nodes_candidates = pair.calculate_antinodes()
             for candidate in nodes_candidates:
+
+                if candidate[0] < 0 or candidate[1] < 0:
+                    continue
+
                 try:
                     """not append while IndexError"""
                     area[candidate[0]][candidate[1]]
@@ -182,7 +186,7 @@ def detect_nodes(area: list[list[str]]) -> list:
                 except IndexError:
                     continue
 
-    return nodes
+    return list(set(nodes))
 
 
 def write_nodes_on_area(area: list, nodes: list) -> list[str]:
