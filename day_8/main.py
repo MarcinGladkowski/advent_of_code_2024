@@ -342,6 +342,8 @@ class StepIterator:
         area = self.antenna_point.area
         cursor = self.antenna_point
 
+        nodes.append(cursor)
+
         while True:
             last_second_node = cursor.to_bottom_right(
                 self.vertical_step,
@@ -359,6 +361,8 @@ class StepIterator:
         nodes = []
 
         cursor = self.antenna_point
+
+        nodes.append(cursor)
 
         while True:
             last_second_node = cursor.to_top_left(
@@ -379,6 +383,8 @@ class StepIterator:
         area = self.antenna_point.area
         cursor = self.antenna_point
 
+        nodes.append(cursor)
+
         while True:
             last_second_node = cursor.to_top_right(
                 self.vertical_step,
@@ -397,6 +403,8 @@ class StepIterator:
 
         cursor = self.antenna_point
 
+        nodes.append(cursor)
+
         while True:
             last_second_node = cursor.to_bottom_left(
                 self.vertical_step,
@@ -414,6 +422,8 @@ class StepIterator:
         nodes = []
 
         cursor = self.antenna_point
+
+        nodes.append(cursor)
 
         while True:
             last_second_node = cursor.to_left(
@@ -434,6 +444,8 @@ class StepIterator:
         area = self.antenna_point.area
         cursor = self.antenna_point
 
+        nodes.append(cursor)
+
         while True:
             last_second_node = cursor.to_right(
                 self.vertical_step,
@@ -451,6 +463,8 @@ class StepIterator:
         nodes = []
 
         cursor = self.antenna_point
+
+        nodes.append(cursor)
 
         while True:
             last_second_node = cursor.to_up(
@@ -470,6 +484,8 @@ class StepIterator:
 
         area = self.antenna_point.area
         cursor = self.antenna_point
+
+        nodes.append(cursor)
 
         while True:
             last_second_node = cursor.to_down(

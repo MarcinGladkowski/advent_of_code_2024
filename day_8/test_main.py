@@ -260,4 +260,6 @@ def test_calculate_anti_nodes_for_3_elements():
 
     nodes = detect_nodes(test_map, True)
 
-    assert len(nodes) == 6
+    pprint(write_nodes_on_area(test_map, nodes))
+
+    assert len(nodes) == 9
