@@ -171,11 +171,7 @@ def test_found_anti_nodes_for_test_data():
 
     assert len(nodes) == 14
 
-def test_calculate_anti_nodes_for_each_grid_inline():
-    """
-        Expect two nodes at
-        (0, 0), (6, 3)
-    """
+def test_calculate_anti_nodes_for_each_grid_inline_from_top_left():
     test_map = [
         [".", ".", ".", ".", ".", "."],
         [".", ".", ".", ".", ".", "."],
@@ -186,8 +182,26 @@ def test_calculate_anti_nodes_for_each_grid_inline():
     ]
 
     pair = AntennasPair(
-        AntennaPoint(2, 2, 'a'),
-        AntennaPoint(3, 3, 'a')
+        AntennaPoint(2, 2, 'a', test_map),
+        AntennaPoint(3, 3, 'a', test_map)
     )
 
-    assert pair.calculate_antinodes() == [(0, 0), (1, 1), (4,4), (5, 5)]
+    assert pair.calculate_antinodes(True) == [(4, 4), (5, 5), (1, 1), (0, 0)]
+
+
+def test_calculate_anti_nodes_for_each_grid_inline_from_top_right():
+    test_map = [
+        [".", ".", ".", ".", ".", "."],
+        [".", ".", ".", ".", ".", "."],
+        [".", ".", ".", "a", ".", "."],
+        [".", ".", "a", ".", ".", "."],
+        [".", ".", ".", ".", ".", "."],
+        [".", ".", ".", ".", ".", "."],
+    ]
+
+    pair = AntennasPair(
+        AntennaPoint(2, 3, 'a', test_map),
+        AntennaPoint(3, 2, 'a', test_map)
+    )
+
+    assert pair.calculate_antinodes(True) == [(4, 1), (5, 0), (1, 4), (0, 5)]
