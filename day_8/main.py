@@ -29,6 +29,18 @@ class AntennaPoint:
     def to_bottom_left(self, y: int = 0, x: int = 0) -> "AntennaPoint":
         return AntennaPoint(self.y + y, self.x - x, self.frequency, self.area)
 
+    def to_left(self, y: int = 0, x: int = 0) -> "AntennaPoint":
+        return AntennaPoint(self.y, self.x - x, self.frequency, self.area)
+
+    def to_right(self, y: int = 0, x: int = 0) -> "AntennaPoint":
+        return AntennaPoint(self.y, self.x + x, self.frequency, self.area)
+
+    def to_up(self, y: int = 0, x: int = 0) -> "AntennaPoint":
+        return AntennaPoint(self.y - y, self.x, self.frequency, self.area)
+
+    def to_down(self, y: int = 0, x: int = 0) -> "AntennaPoint":
+        return AntennaPoint(self.y + y, self.x, self.frequency, self.area)
+
 class AntennasPair:
     def __init__(self, first_antenna: AntennaPoint, second_antenna: AntennaPoint = None):
         self.first_antenna = first_antenna
@@ -170,6 +182,30 @@ class HorizontallyAntiNodes:
             (0, antennas_pair.second_antenna.x + horizontal_distance)
         ]
 
+    @staticmethod
+    def calculate_anti_nodes_iteration(antennas_pair: AntennasPair):
+        horizontal_distance = antennas_pair.second_antenna.x - antennas_pair.first_antenna.x
+
+        nodes = []
+
+        next_iterator = StepIterator(
+            antennas_pair.first_antenna,
+            0,
+            horizontal_distance,
+        )
+
+        nodes.extend(next_iterator.to_left())
+
+        previous_iterator = StepIterator(
+            antennas_pair.second_antenna,
+            0,
+            horizontal_distance,
+        )
+
+        nodes.extend(previous_iterator.to_right())
+
+        return [node.as_tuple() for node in nodes]
+
 
 class VerticallyAntiNodes:
 
@@ -185,6 +221,30 @@ class VerticallyAntiNodes:
             (antennas_pair.first_antenna.y - vertical_distance, 0),
             (antennas_pair.second_antenna.y + vertical_distance, 0)
         ]
+
+    @staticmethod
+    def calculate_anti_nodes_iteration(antennas_pair: AntennasPair):
+        vertical_distance = antennas_pair.second_antenna.y - antennas_pair.first_antenna.y
+
+        nodes = []
+
+        next_iterator = StepIterator(
+            antennas_pair.first_antenna,
+            vertical_distance,
+            0,
+        )
+
+        nodes.extend(next_iterator.to_up())
+
+        previous_iterator = StepIterator(
+            antennas_pair.second_antenna,
+            vertical_distance,
+            0,
+        )
+
+        nodes.extend(previous_iterator.to_down())
+
+        return [node.as_tuple() for node in nodes]
 
 
 def find_antenna_points(area: list[list[str]]) -> dict:
@@ -234,7 +294,7 @@ def combinations(area: list) -> dict[str, set[AntennasPair]]:
     return frequency_combinations
 
 
-def detect_nodes(area: list[list[str]]) -> list:
+def detect_nodes(area: list[list[str]], iteration_mode=False) -> list:
     """
        Nodes are created only for two antennas with the same letter [a-z][A-Z][0-9]] on the same line
        diagonal, vertical, horizontal ?
@@ -242,7 +302,7 @@ def detect_nodes(area: list[list[str]]) -> list:
     nodes = []
     for frequency, antenna_pairs in combinations(area).items():
         for pair in antenna_pairs:
-            nodes_candidates = pair.calculate_antinodes()
+            nodes_candidates = pair.calculate_antinodes(iteration_mode)
             for candidate in nodes_candidates:
 
                 if candidate[0] < 0 or candidate[1] < 0:
@@ -346,6 +406,80 @@ class StepIterator:
             cursor = last_second_node
 
             if cursor.y < 0 or cursor.x < 0:
+                return nodes
+
+            nodes.append(last_second_node)
+
+    def to_left(self):
+        nodes = []
+
+        cursor = self.antenna_point
+
+        while True:
+            last_second_node = cursor.to_left(
+                self.vertical_step,
+                self.horizontal_step
+            )
+
+            cursor = last_second_node
+
+            if cursor.y < 0 or cursor.x < 0:
+                return nodes
+
+            nodes.append(last_second_node)
+
+    def to_right(self):
+        nodes = []
+
+        area = self.antenna_point.area
+        cursor = self.antenna_point
+
+        while True:
+            last_second_node = cursor.to_right(
+                self.vertical_step,
+                self.horizontal_step
+            )
+
+            cursor = last_second_node
+
+            if cursor.y >= len(area) or cursor.x >= len(area[0]):
+                return nodes
+
+            nodes.append(last_second_node)
+
+    def to_up(self):
+        nodes = []
+
+        cursor = self.antenna_point
+
+        while True:
+            last_second_node = cursor.to_up(
+                self.vertical_step,
+                self.horizontal_step
+            )
+
+            cursor = last_second_node
+
+            if cursor.y < 0 or cursor.x < 0:
+                return nodes
+
+            nodes.append(last_second_node)
+
+    def to_down(self):
+        nodes = []
+
+        area = self.antenna_point.area
+        cursor = self.antenna_point
+
+        while True:
+            last_second_node = cursor.to_down(
+                self.vertical_step,
+                self.horizontal_step
+            )
+
+            cursor = last_second_node
+
+            if cursor.y >= len(area) or cursor.x >= len(area[0]):
                 return nodes
 
             nodes.append(last_second_node)
