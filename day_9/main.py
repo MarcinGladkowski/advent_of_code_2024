@@ -1,5 +1,4 @@
-from tarfile import fully_trusted_filter
-
+from copy import deepcopy
 
 def decode(raw_input: str):
     decoded = []
@@ -13,6 +12,23 @@ def decode(raw_input: str):
 
     return decoded
 
+
+def decode_to_groups(raw_input: str):
+
+    decoded = []
+
+    for index, element in enumerate(raw_input):
+        if index % 2 != 0:
+
+            if int(element) == 0:
+                continue
+
+            decoded.append([None for _ in range((int(element)))])
+            continue
+
+        decoded.append([int(index / 2) for _ in range((int(element)))])
+
+    return decoded
 
 def rearrange(disk_map: list[int | None]) -> list[int]:
     """
@@ -28,6 +44,21 @@ def rearrange(disk_map: list[int | None]) -> list[int]:
             disk_map.insert(len(disk_map), None)
 
     return disk_map
+
+def rearrange_groups(disk_map: list[list[int|None]]) -> list[list[int]]:
+    """
+        Remember to split if group is smaller than space
+
+        Not enumerate by disk_map but from end not None groups
+    """
+    reverse_group_iterator = list(filter(lambda x: None not in x, deepcopy(disk_map)))
+    reverse_group_iterator.reverse()
+
+    for index, element in enumerate(reverse_group_iterator):
+        print(element)
+
+    return []
+
 
 def is_free_space_on_right_side(disk_map: list[int]) -> bool:
     """When all free spaces on right side we are finished operation of rearrange"""

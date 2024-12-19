@@ -1,4 +1,5 @@
-from day_9.main import decode, rearrange, is_free_space_on_right_side
+from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_groups, \
+    rearrange_groups
 
 
 def test_decode():
@@ -20,3 +21,21 @@ def test_is_finished_rearrange():
 
 def test_calculate_checksum_on_basic():
     assert sum([index * int(element) for index, element in enumerate('0099811188827773336446555566')]) == 1928
+    """Replaces none with zeros"""
+    assert calculate_hash(
+        [0, 0, 9, 9, 2, 1, 1, 1, 7, 7, 7, 0, 4, 4, 0, 3, 3, 3, 0, 0, 0, 0, 5, 5, 5, 5, 0, 6, 6, 6, 6, 0, 0, 0, 0, 0, 8,
+         8, 8, 8, 0, 0]
+    ) == 2858
+
+def test_decode_to_groups():
+    assert decode_to_groups('2333133121414131402') == [
+        [0,0],[None, None, None],[1,1,1],[None, None, None],[2],[None, None, None],[3,3,3],[None],[4,4],[None],[5,5,5,5],[None],[6,6,6,6],[None],[7,7,7],[None],[8,8,8,8],[9,9]
+    ]
+
+def test_rearrange_with_groups():
+    assert rearrange_groups(
+        [[0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None], [4, 4],
+        [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]]
+    ) == [
+        [0,0],[9,9],[2],[1,1,1],[7,7,7],[None],[4,4],[None],[3,3,3],[None, None, None, None],[5,5,5,5],[None],[6,6,6,6],[None, None, None, None, None],[8,8,8,8],[None, None]
+    ]
