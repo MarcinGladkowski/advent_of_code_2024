@@ -5,9 +5,6 @@ def decode(raw_input: str):
     decoded = []
 
     for index, element in enumerate(raw_input):
-        if index == 0:
-            decoded.append(index)
-            continue
         if index % 2 != 0:
             decoded.extend([None for _ in range((int(element)))])
             continue
@@ -42,3 +39,46 @@ def get_from_right(disk_map: list[int]) -> int:
 
         if last_element is not None:
             return last_element
+
+
+def calculate_hash(disk_map: list[int]) -> int:
+    return sum([index * int(element) for index, element in enumerate(disk_map)])
+
+
+def run(data_input: str) -> int:
+    decoded = decode(data_input)
+    rearranged = rearrange(decoded)
+
+    return calculate_hash(rearranged)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
