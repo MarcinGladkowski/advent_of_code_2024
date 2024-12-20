@@ -1,3 +1,5 @@
+import re
+
 from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_groups, \
     rearrange_groups, is_free_slot
 
@@ -42,10 +44,14 @@ def test_is_free_slot():
     assert is_free_slot([None, None, None])
     assert is_free_slot([0, 0, 0]) == False
 
+def test_move_block_and_fill_block_to_the_end():
+    assert (rearrange_groups([[0, 0], [None, None, None], [1, 1, 1], [9, 9]]) == [[0, 0], [9, 9], [None], [1, 1, 1], [None, None]])
 
-def test_rearrange_with_groups_for_2():
-    assert (rearrange_groups([[0, 0], [None, None, None], [1, 1, 1], [None], [2], [9, 9]])
-            == [[0, 0], [9, 9], [2], [1, 1, 1], [None]])
+def test_move_block_from_end():
+    assert rearrange_groups([[None, None],[9,9]]) == [[9,9],[None, None]]
+
+def test_move_shorter_block_and_split_it_up():
+    assert (rearrange_groups([[0, 0], [None], [1, 1, 1], [2], [7, 7, 7]]) == [[0, 0], [2], [1, 1, 1], [None], [7, 7, 7]])
 
 def test_rearrange_with_groups_for_test_case():
     assert rearrange_groups(
@@ -58,3 +64,14 @@ def test_rearrange_with_groups_for_test_case():
                [0, 0], [9, 9], [2], [1, 1, 1], [7, 7, 7], [None], [4, 4], [None], [3, 3, 3], [None, None, None, None],
                [5, 5, 5, 5], [None], [6, 6, 6, 6], [None, None, None, None, None], [8, 8, 8, 8], [None, None]
            ]
+
+def test_solution_on_regular_expression():
+
+
+    value_1 = '00...111...2...333.44.5555.6666.777.888899'
+
+    print(re.sub(r'\.{2}', '99', value_1, count=1))
+
+    assert True
+
+
