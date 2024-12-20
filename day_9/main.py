@@ -64,14 +64,15 @@ def rearrange_groups(disk_map: list[list[int|None]]) -> list[list[int]]:
     reverse_group_iterator.reverse()
 
     for index, element in enumerate(reverse_group_iterator):
+        pprint(disk_map)
         if is_free_slot(element):
             continue
 
         for disk_index, disk_element in enumerate(disk_map):
             if is_free_slot(disk_element) and is_allowed_to_apply(disk_element, element):
                 """how to apply, needs split up"""
+                deallocate_used_element(disk_map, len(disk_map)-index-1)
                 disk_allocate_space(element, disk_map, disk_index)
-                #deallocate_used_element(disk_map, len(disk_map)-index-1)
                 break
 
     return disk_map
@@ -100,7 +101,6 @@ def deallocate_used_element(disk_map: list, disk_index: int) -> None:
     pprint(disk_map)
     pprint(disk_index)
     disk_map.pop(disk_index)
-
 
 def is_free_space_on_right_side(disk_map: list[int]) -> bool:
     """When all free spaces on right side we are finished operation of rearrange"""

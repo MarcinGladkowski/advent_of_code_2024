@@ -42,7 +42,12 @@ def test_is_free_slot():
     assert is_free_slot([None, None, None])
     assert is_free_slot([0, 0, 0]) == False
 
-def test_rearrange_with_groups():
+
+def test_rearrange_with_groups_for_2():
+    assert (rearrange_groups([[0, 0], [None, None, None], [1, 1, 1], [None], [2], [9, 9]])
+            == [[0, 0], [9, 9], [2], [1, 1, 1], [None]])
+
+def test_rearrange_with_groups_for_test_case():
     assert rearrange_groups(
         [
             [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None],
