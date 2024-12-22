@@ -1,7 +1,5 @@
-import re
-
-from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_groups, \
-    rearrange_groups, is_free_slot, rearrange_with_regular_expression
+from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_blocks, is_free_slot, \
+    Block, rearrange_blocks, join_blocks
 
 
 def test_decode():
@@ -35,7 +33,7 @@ def test_calculate_checksum_on_basic():
 
 
 def test_decode_to_groups():
-    assert decode_to_groups('2333133121414131402') == [
+    assert decode_to_blocks('2333133121414131402') == [
         [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None], [4, 4],
         [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]
     ]
@@ -44,44 +42,28 @@ def test_is_free_slot():
     assert is_free_slot([None, None, None])
     assert is_free_slot([0, 0, 0]) == False
 
-def test_move_block_and_fill_block_to_the_end():
-    assert (rearrange_groups([[0, 0], [None, None, None], [1, 1, 1], [9, 9]]) == [[0, 0], [9, 9], [None], [1, 1, 1], [None, None]])
 
-def test_move_block_from_end():
-    assert rearrange_groups([[None, None],[9,9]]) == [[9,9],[None, None]]
+def test_decode_to_blocks():
+    """
+        00...111
+    """
+    result = decode_to_blocks('233')
 
-def test_move_shorter_block_and_split_it_up():
-    assert (rearrange_groups([[0, 0], [None], [1, 1, 1], [2], [7, 7, 7]]) == [[0, 0], [2], [1, 1, 1], [None], [7, 7, 7]])
+    assert len(result) == 3
+    assert Block(5, 7, 1) == result[2]
+    assert Block(2, 4, None) == result[1]
+    assert Block(0, 1, 0) == result[0]
 
-def test_rearrange_with_groups_for_test_case():
-    assert rearrange_groups(
-        [
-            [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None],
-            [4, 4],
-            [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]
-        ]
-    ) == [
-               [0, 0], [9, 9], [2], [1, 1, 1], [7, 7, 7], [None], [4, 4], [None], [3, 3, 3], [None, None, None, None],
-               [5, 5, 5, 5], [None], [6, 6, 6, 6], [None, None, None, None, None], [8, 8, 8, 8], [None, None]
-           ]
 
-def test_solution_on_regular_expression():
+def test_decode_and_encode():
+    blocks = decode_to_blocks('233')
+    assert join_blocks(blocks) == '00...111'
 
-    result = rearrange_with_regular_expression(
-        [
-            [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None],
-            [4, 4],
-            [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]
-        ],
-        '00...111...2...333.44.5555.6666.777.888899'
-    )
 
-    assert True
+def test_rearrange_blocks_for_split_contains():
+    blocks = decode_to_blocks('2321')
+    assert len(blocks) == 4
+    rearrange_blocks(blocks)
 
-def test_move_block_from_end_with_re():
 
-    #print('..99'[2:4])
-    assert rearrange_with_regular_expression(
-        [[None, None],[9,9]],
-        '..99'
-    ) == '99..'
+
