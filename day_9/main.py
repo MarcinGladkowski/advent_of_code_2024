@@ -1,3 +1,6 @@
+from configparser import NoOptionError
+
+
 def decode(raw_input: str):
     decoded = []
 
@@ -27,6 +30,31 @@ class Block:
         return (self.index_from == other.index_from
                 and self.index_to == other.index_to
                 and self.element == other.element)
+
+    def is_empty(self) -> bool:
+        return self.element is None
+
+    def slots_reserved(self) -> int:
+        return (self.index_to - self.index_from) + 1
+
+    def to_allocate(self, to_set: "Block"):
+        return self.slots_reserved() >= to_set.slots_reserved()
+
+    def allocate(self, to_set: "Block"):
+        if self.slots_reserved() == to_set.slots_reserved():
+            """Allocated space is the same"""
+            return Block(self.index_from, self.index_to, to_set.element), None
+        """Needed None blocks for rest space"""
+        free_spaces = self.slots_reserved() - to_set.slots_reserved()
+        Block(self.index_to, self.index_to + free_spaces, None)
+
+        return (
+            Block(self.index_from, self.index_to - free_spaces, to_set.element),
+            Block(self.index_to, self.index_to + free_spaces, None)
+        )
+
+    def reset_block(self):
+        return Block(self.index_from, self.index_to, None)
 
 def decode_to_blocks(raw_input: str):
 
@@ -99,11 +127,36 @@ def run(data_input: str) -> int:
 
 
 """Rearrange for part 2"""
-def rearrange_blocks(blocks: list[Block]) -> list[Block]:
-    return blocks
-
 def join_blocks(blocks: list[Block]) -> str:
     return ''.join([str(block) for block in blocks])
+
+def rearrange_blocks(blocks: list[Block]) -> list[Block]:
+
+    for index in reversed(range(len(blocks))):
+        block_to_allocate = blocks[index]
+
+        if index == 0:
+            continue
+
+        if block_to_allocate.is_empty():
+            continue
+
+        for block_index, block in enumerate(blocks):
+            if block.is_empty() and block.to_allocate(block_to_allocate):
+
+                print(f"\n [DEBUG] Applied block {block_to_allocate} into {block} \n")
+
+                to_allocate = block.allocate(block_to_allocate)
+                blocks[block_index] = to_allocate[0] # replace object
+                blocks[index] = block_to_allocate.reset_block() # reset block
+
+                if to_allocate[1]:
+                    blocks.insert(block_index, to_allocate[1])
+
+                # @TODO Merge None blocks next to None blocks
+                break
+
+    return blocks
 
 
 

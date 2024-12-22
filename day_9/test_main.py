@@ -56,14 +56,19 @@ def test_decode_to_blocks():
 
 
 def test_decode_and_encode():
-    blocks = decode_to_blocks('233')
-    assert join_blocks(blocks) == '00...111'
+    assert join_blocks(decode_to_blocks('233')) == '00...111'
+    assert join_blocks(decode_to_blocks('2321')) == '00...11.'
 
 
 def test_rearrange_blocks_for_split_contains():
+    """
+        00...11. -> 0011....
+    """
     blocks = decode_to_blocks('2321')
     assert len(blocks) == 4
-    rearrange_blocks(blocks)
+    result = rearrange_blocks(blocks)
+
+    assert join_blocks(result) == '0011....'
 
 
 
