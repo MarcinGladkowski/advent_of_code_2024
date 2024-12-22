@@ -1,7 +1,7 @@
 import re
 
 from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_groups, \
-    rearrange_groups, is_free_slot
+    rearrange_groups, is_free_slot, rearrange_with_regular_expression
 
 
 def test_decode():
@@ -67,11 +67,21 @@ def test_rearrange_with_groups_for_test_case():
 
 def test_solution_on_regular_expression():
 
-
-    value_1 = '00...111...2...333.44.5555.6666.777.888899'
-
-    print(re.sub(r'\.{2}', '99', value_1, count=1))
+    result = rearrange_with_regular_expression(
+        [
+            [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None],
+            [4, 4],
+            [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]
+        ],
+        '00...111...2...333.44.5555.6666.777.888899'
+    )
 
     assert True
 
+def test_move_block_from_end_with_re():
 
+    #print('..99'[2:4])
+    assert rearrange_with_regular_expression(
+        [[None, None],[9,9]],
+        '..99'
+    ) == '99..'

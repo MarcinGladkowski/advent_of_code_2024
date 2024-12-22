@@ -1,3 +1,4 @@
+import re
 from copy import deepcopy
 from pprint import pprint
 
@@ -14,6 +15,15 @@ def decode(raw_input: str):
 
     return decoded
 
+class Block:
+
+    def __init__(self, index_from: int, index_to: int, element: int|None):
+        self.index_from = index_from
+        self.index_to = index_to
+        self.element = element
+
+    def __repr__(self):
+        return f'{self.index_from}-{self.index_to}: {self.element}'
 
 def decode_to_groups(raw_input: str):
 
@@ -73,8 +83,6 @@ def rearrange_groups(disk_map: list[list[int|None]]) -> list[list[int]]:
         if is_free_slot(candidate_to_allocate):
             continue
 
-        print(disk_map)
-
         for disk_index, disk_element in enumerate(disk_map):
             if is_free_slot(disk_element) and is_allowed_to_apply(disk_element, candidate_to_allocate):
                 deallocate_used_element(candidate_to_allocate, disk_map, len(disk_map)-index-1)
@@ -82,6 +90,40 @@ def rearrange_groups(disk_map: list[list[int|None]]) -> list[list[int]]:
                 break
 
     return disk_map
+
+
+def deallocate_on_raw(disk_map_raw: str, replace_from: int, replace_to: int):
+    replaced = []
+    for index, element in enumerate(disk_map_raw):
+        if replace_from < index <= replace_to:
+            replaced.append('.')
+            continue
+        replaced.append(element)
+
+    return ''.join(replaced)
+
+
+def rearrange_with_regular_expression(disk_map: list[list[int|None]], raw_disk_map: str) -> str:
+
+    reverse_group_iterator = list(deepcopy(disk_map))
+    reverse_group_iterator.reverse()
+
+    for index, candidate_to_allocate in enumerate(reverse_group_iterator):
+
+        if index == (len(reverse_group_iterator) - 1):
+            return raw_disk_map
+
+        min_block_len = len(candidate_to_allocate)
+        pattern = re.compile(fr'\.{{{min_block_len}}}')
+
+        match = re.search(pattern, raw_disk_map)
+
+        if match:
+            disk_element_to_move = ''.join([str(number) for number in candidate_to_allocate])
+            raw_disk_map = re.sub(pattern, disk_element_to_move, raw_disk_map)
+            raw_disk_map = deallocate_on_raw(raw_disk_map, )
+
+    return raw_disk_map
 
 def disk_allocate_space(disk_element: list[int], disk_map: list, disk_index: int) -> None:
     """
