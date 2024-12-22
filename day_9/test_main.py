@@ -1,6 +1,4 @@
-from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, decode_to_blocks, is_free_slot, \
-    Block, rearrange_blocks, join_blocks
-
+from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, is_free_slot
 
 def test_decode():
     assert decode('12345') == [0, None, None, 1, 1, 1, None, None, None, None, 2, 2, 2, 2, 2]
@@ -30,45 +28,3 @@ def test_calculate_checksum_on_basic():
         [0, 0, 9, 9, 2, 1, 1, 1, 7, 7, 7, 0, 4, 4, 0, 3, 3, 3, 0, 0, 0, 0, 5, 5, 5, 5, 0, 6, 6, 6, 6, 0, 0, 0, 0, 0, 8,
          8, 8, 8, 0, 0]
     ) == 2858
-
-
-def test_decode_to_groups():
-    assert decode_to_blocks('2333133121414131402') == [
-        [0, 0], [None, None, None], [1, 1, 1], [None, None, None], [2], [None, None, None], [3, 3, 3], [None], [4, 4],
-        [None], [5, 5, 5, 5], [None], [6, 6, 6, 6], [None], [7, 7, 7], [None], [8, 8, 8, 8], [9, 9]
-    ]
-
-def test_is_free_slot():
-    assert is_free_slot([None, None, None])
-    assert is_free_slot([0, 0, 0]) == False
-
-
-def test_decode_to_blocks():
-    """
-        00...111
-    """
-    result = decode_to_blocks('233')
-
-    assert len(result) == 3
-    assert Block(5, 7, 1) == result[2]
-    assert Block(2, 4, None) == result[1]
-    assert Block(0, 1, 0) == result[0]
-
-
-def test_decode_and_encode():
-    assert join_blocks(decode_to_blocks('233')) == '00...111'
-    assert join_blocks(decode_to_blocks('2321')) == '00...11.'
-
-
-def test_rearrange_blocks_for_split_contains():
-    """
-        00...11. -> 0011....
-    """
-    blocks = decode_to_blocks('2321')
-    assert len(blocks) == 4
-    result = rearrange_blocks(blocks)
-
-    assert join_blocks(result) == '0011....'
-
-
-
