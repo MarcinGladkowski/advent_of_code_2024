@@ -36,8 +36,7 @@ def test_calculate_checksum_on_basic():
     assert calculate_on_raw('0099211177700440333000055550666600000888800') == 2858
 
 def test_number_count():
-    assert number_block_length('00....222', '2') == 3
-    assert number_block_length('00....123123123', '123') == 3
+    assert number_block_length([0, 0, None, None, None, 2, 2, 2], 2) == 3
 
 def test_count_free_spaces():
     assert is_free_block_to_allocate('00....222', 9) == False
@@ -55,3 +54,8 @@ def test_full_rearrange():
         '00...123123123',
         [0, 0, None, None, None, 123, 123, 123]
     ) == '00123123123...'
+
+    assert full_blocks_rearrange(
+        '00.....99.9999',
+        [0, 0, None, None, None,None, None, 99, 99, None, 9999]
+    ) == '009999.99.....'

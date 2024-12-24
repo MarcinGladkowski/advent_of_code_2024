@@ -62,11 +62,14 @@ def run(data_input: str) -> int:
     return calculate_hash(rearranged)
 
 
-def number_block_length(disk_map: str, number: str) -> int:
+def number_block_length(disk_map: list[int], number: int) -> int:
     """
         length for number block to move
+
+        Cannot rely on simple pattern 99999 99,99,99 ?!
     """
-    return len(re.findall(fr'{number}', disk_map))
+    return len(list(filter(lambda x: x == number, disk_map)))
+
 
 def free_blocks_for_length(raw_map: str, number: int) -> list:
     """
@@ -74,14 +77,14 @@ def free_blocks_for_length(raw_map: str, number: int) -> list:
     """
     return re.findall(fr'\.{{{number}}}', raw_map)
 
-def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = None) -> bool:
+
+def is_free_block_to_allocate(raw_map: str, numbers_count: int, element: str | None = None) -> bool:
     """
     Check allocating only on free space on right side
 
     Split raw map by index
     """
     index = len(raw_map) if element is None else raw_map.index(element)
-    numbers_count = number_block_length(raw_map, element)
     raw_map = raw_map[:index]
 
     for block in free_blocks_for_length(raw_map, numbers_count):
@@ -94,7 +97,8 @@ def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = Non
 
     return False
 
-def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
+
+def full_blocks_rearrange(disk_map: str, decoded_disk: list[int | None]) -> str:
     """
         Rearranges the disk map for part II
         Add support for numbers > 9, 122,122,122 ...
@@ -106,9 +110,10 @@ def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
 
         raw_element = str(element)
 
-        element_count = number_block_length(disk_map, raw_element)
+        element_count = number_block_length(decoded_disk, element)
 
-        if element is not None and is_free_block_to_allocate(disk_map, element_count, raw_element):
+        if (element is not None
+                and is_free_block_to_allocate(disk_map, element_count, raw_element)):
             # skip rest elements
             # get number of elements for number
             # we can search elements and remove by number e.g. 13, 13, 13
@@ -116,7 +121,7 @@ def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
             # replace with none|dots
             disk_map = re.sub(
                 fr'[{{{element}}}]+',
-                '.'*element_count,
+                '.' * element_count,
                 disk_map,
                 1
             )
@@ -124,7 +129,7 @@ def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
             # put in spaces
             disk_map = re.sub(
                 fr'\.{{{element_count}}}',
-                raw_element*element_count,
+                raw_element * element_count,
                 disk_map,
                 1
             )
@@ -143,35 +148,6 @@ def generate(data_input: str) -> str:
     raw = ''.join([str(n) if n is not None else '.' for n in decoded])
     return full_blocks_rearrange(raw, decoded)
 
+
 def run_for_full_moved(data_input: str) -> int:
     return calculate_hash([int(x) if x != '.' else 0 for x in generate(data_input)])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
