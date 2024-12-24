@@ -62,26 +62,70 @@ def run(data_input: str) -> int:
     return calculate_hash(rearranged)
 
 
-def number_count(disk_map: list[int|None], number: str|int) -> int:
-    return len(list(filter(lambda x: x == int(number), disk_map)))
+def number_count(disk_map: str, number: str) -> int:
+    return len(re.findall(fr'{{{number}}}+', disk_map))
 
-def none_spots(disk_map: list[int|None]) -> list:
-    raw_map = ''.join(['.' if el is None else str(el) for el in disk_map])
+def none_spots(raw_map: str, number: str) -> list:
+    #raw_map = ''.join(['.' if el is None else str(el) for el in disk_map])
+    return re.findall(fr'\.{{{number}}}', raw_map)
 
-    return re.findall(r'\.+', raw_map)
 
-
-def full_blocks_rearrange(disk_map: list[int | None]) -> list[int]:
+def full_blocks_rearrange(disk_map: str) -> str:
     """
         Rearranges the disk map for part II
     """
     for index, element in enumerate(disk_map):
-        if element is not None:
+
+        if element == 0:
+            continue
+
+        if element is not None and none_spots(disk_map, element):
+
+            element_count = number_count(disk_map, element)
+
+            re.sub(
+                fr'\.{{{element_count}}}',
+                element*element_count,
+                disk_map,
+                1
+            )
+            # skip rest elements
             # get number of elements for number
             # we can search elements and remove by number e.g. 13, 13, 13
-            number_len = number_count(disk_map, element)
-            # None sports
-            print(none_spots(disk_map))
-
+            # None sports for specific number
 
     return disk_map
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

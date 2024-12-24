@@ -35,5 +35,7 @@ def test_calculate_checksum_on_basic():
 
 
 def test_full_rearrange():
-    assert (full_blocks_rearrange([0, 0, None, None, None, 1, 1, 1, 2, 2])
-            == [0, 0, 2, 2, None, 1, 1, 1])
+    # assert (full_blocks_rearrange([0, 0, None, None, None, 1, 1, 1, 2, 2])
+    #         == [0, 0, 2, 2, None, 1, 1, 1])
+
+    assert (full_blocks_rearrange('00...11122') == '0022.111')
