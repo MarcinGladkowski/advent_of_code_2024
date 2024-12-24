@@ -87,6 +87,10 @@ def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = Non
     numbers_count = number_block_length(raw_map, str(number))
 
     for block in free_blocks_for_length(raw_map, numbers_count):
+
+        if len(block) == 0 or numbers_count == 0:
+            continue
+
         if len(block) >= numbers_count:
             return True
 

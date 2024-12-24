@@ -40,8 +40,8 @@ def test_number_count():
     assert number_block_length('00....123123123', '123') == 3
 
 def test_count_free_spaces():
-    #assert is_free_block_to_allocate('00....222', 2)
-    #assert is_free_block_to_allocate('00....222', 9) == False
+    assert is_free_block_to_allocate('00....222', 9) == False
+    assert is_free_block_to_allocate('00....222', 2)
     assert is_free_block_to_allocate('00....123123123', 123)
 
 def test_full_rearrange():
