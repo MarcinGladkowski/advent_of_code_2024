@@ -1,4 +1,5 @@
-from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, full_blocks_rearrange
+from day_9.main import decode, rearrange, is_free_space_on_right_side, calculate_hash, full_blocks_rearrange, \
+    number_block_length, free_blocks_for_length, is_free_block_to_allocate, calculate_on_raw
 
 
 def test_decode():
@@ -32,10 +33,22 @@ def test_calculate_checksum_on_basic():
     ) == 2858
 
     """Check not filling empty spaces with zeroes to sum"""
+    assert calculate_on_raw('0099211177700440333000055550666600000888800') == 2858
 
+def test_number_count():
+    assert number_block_length('00....222', '2') == 3
+    assert number_block_length('00....123123123', '123') == 3
+
+def test_count_free_spaces():
+    #assert is_free_block_to_allocate('00....222', 2)
+    #assert is_free_block_to_allocate('00....222', 9) == False
+    assert is_free_block_to_allocate('00....123123123', 123)
 
 def test_full_rearrange():
-    # assert (full_blocks_rearrange([0, 0, None, None, None, 1, 1, 1, 2, 2])
-    #         == [0, 0, 2, 2, None, 1, 1, 1])
-
-    assert (full_blocks_rearrange('00...11122') == '0022.111')
+    assert full_blocks_rearrange('00...22', [0, 0, None, None, None, 2, 2]) == '0022...'
+    assert full_blocks_rearrange('00...11122', [0, 0, None, None, None, 1, 1, 1, 2, 2]) == '0022.111..'
+    # assert full_blocks_rearrange('00...111...2...333.44.5555.6666.777.888899') == '00992111777.44.333....5555.6666.....8888..'
+    # assert full_blocks_rearrange(
+    #     '00...123123123',
+    #     [0, 0, None, None, None, 123, 123, 123]
+    # ) == '001231231234...'

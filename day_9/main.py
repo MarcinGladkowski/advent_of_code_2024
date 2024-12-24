@@ -62,43 +62,94 @@ def run(data_input: str) -> int:
     return calculate_hash(rearranged)
 
 
-def number_count(disk_map: str, number: str) -> int:
-    return len(re.findall(fr'{{{number}}}+', disk_map))
+def number_block_length(disk_map: str, number: str) -> int:
+    """
+        length for number block to move
+    """
+    return len(re.findall(fr'{number}', disk_map))
 
-def none_spots(raw_map: str, number: str) -> list:
-    #raw_map = ''.join(['.' if el is None else str(el) for el in disk_map])
+def free_blocks_for_length(raw_map: str, number: int) -> list:
+    """
+        Check if exist free space for moving block length
+    """
     return re.findall(fr'\.{{{number}}}', raw_map)
 
+def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = None) -> bool:
+    """
+    Check allocating only on free space on right side
 
-def full_blocks_rearrange(disk_map: str) -> str:
+    Split raw map by index
+    """
+    index = len(raw_map) if element is None else raw_map.index(element)
+
+    raw_map = raw_map[:index]
+
+    numbers_count = number_block_length(raw_map, str(number))
+
+    for block in free_blocks_for_length(raw_map, numbers_count):
+        if len(block) >= numbers_count:
+            return True
+
+    return False
+
+def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
     """
         Rearranges the disk map for part II
-    """
-    for index, element in enumerate(disk_map):
 
-        if element == 0:
+        Add support for numbers > 9, 122,122,122 ...
+    """
+
+    for index, element in enumerate(reversed(decoded_disk)):
+
+        if element == 0 or element is None:
             continue
 
-        if element is not None and none_spots(disk_map, element):
+        raw_element = str(element)
 
-            element_count = number_count(disk_map, element)
+        element_count = number_block_length(disk_map, raw_element)
 
-            re.sub(
-                fr'\.{{{element_count}}}',
-                element*element_count,
-                disk_map,
-                1
-            )
+        if (element is not None
+                and is_free_block_to_allocate(disk_map, element_count, raw_element)):
             # skip rest elements
             # get number of elements for number
             # we can search elements and remove by number e.g. 13, 13, 13
             # None sports for specific number
+            # replace with none|dots
+            disk_map = re.sub(
+                fr'[{{{element}}}]+',
+                '.'*element_count,
+                disk_map,
+                1
+            )
+
+            # put in spaces
+            disk_map = re.sub(
+                fr'\.{{{element_count}}}',
+                raw_element*element_count,
+                disk_map,
+                1
+            )
+
+            # needs to rebuild decoded string and list
 
     return disk_map
 
 
+def calculate_on_raw(raw: str):
+    return sum([index * int(element) for index, element in enumerate(raw)])
 
 
+def generate(data_input: str) -> str:
+    decoded = decode(data_input)
+    raw = ''.join([str(n) if n is not None else '.' for n in decoded])
+    return full_blocks_rearrange(raw)
+
+def run_for_full_moved(data_input: str) -> int:
+    decoded = decode(data_input)
+
+    raw = ''.join([str(n) if n is not None else '.' for n in decoded])
+    rearranged = full_blocks_rearrange(raw)
+    return calculate_hash([int(x) if x != '.' else 0 for x in rearranged])
 
 
 
