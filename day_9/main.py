@@ -81,10 +81,8 @@ def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = Non
     Split raw map by index
     """
     index = len(raw_map) if element is None else raw_map.index(element)
-
+    numbers_count = number_block_length(raw_map, element)
     raw_map = raw_map[:index]
-
-    numbers_count = number_block_length(raw_map, str(number))
 
     for block in free_blocks_for_length(raw_map, numbers_count):
 
@@ -99,10 +97,8 @@ def is_free_block_to_allocate(raw_map: str, number: int, element: str|None = Non
 def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
     """
         Rearranges the disk map for part II
-
         Add support for numbers > 9, 122,122,122 ...
     """
-
     for index, element in enumerate(reversed(decoded_disk)):
 
         if element == 0 or element is None:
@@ -112,8 +108,7 @@ def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
 
         element_count = number_block_length(disk_map, raw_element)
 
-        if (element is not None
-                and is_free_block_to_allocate(disk_map, element_count, raw_element)):
+        if element is not None and is_free_block_to_allocate(disk_map, element_count, raw_element):
             # skip rest elements
             # get number of elements for number
             # we can search elements and remove by number e.g. 13, 13, 13
@@ -134,7 +129,7 @@ def full_blocks_rearrange(disk_map: str, decoded_disk: list[int|None]) -> str:
                 1
             )
 
-            # needs to rebuild decoded string and list
+            # needs to rebuild decoded string and list ?
 
     return disk_map
 
@@ -146,14 +141,10 @@ def calculate_on_raw(raw: str):
 def generate(data_input: str) -> str:
     decoded = decode(data_input)
     raw = ''.join([str(n) if n is not None else '.' for n in decoded])
-    return full_blocks_rearrange(raw)
+    return full_blocks_rearrange(raw, decoded)
 
 def run_for_full_moved(data_input: str) -> int:
-    decoded = decode(data_input)
-
-    raw = ''.join([str(n) if n is not None else '.' for n in decoded])
-    rearranged = full_blocks_rearrange(raw)
-    return calculate_hash([int(x) if x != '.' else 0 for x in rearranged])
+    return calculate_hash([int(x) if x != '.' else 0 for x in generate(data_input)])
 
 
 

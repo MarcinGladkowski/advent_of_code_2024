@@ -45,10 +45,13 @@ def test_count_free_spaces():
     assert is_free_block_to_allocate('00....123123123', 123)
 
 def test_full_rearrange():
+    assert full_blocks_rearrange('00...2', [0, 0, None, None, None, 2]) == '002...'
+
     assert full_blocks_rearrange('00...22', [0, 0, None, None, None, 2, 2]) == '0022...'
+
     assert full_blocks_rearrange('00...11122', [0, 0, None, None, None, 1, 1, 1, 2, 2]) == '0022.111..'
-    # assert full_blocks_rearrange('00...111...2...333.44.5555.6666.777.888899') == '00992111777.44.333....5555.6666.....8888..'
-    # assert full_blocks_rearrange(
-    #     '00...123123123',
-    #     [0, 0, None, None, None, 123, 123, 123]
-    # ) == '001231231234...'
+
+    assert full_blocks_rearrange(
+        '00...123123123',
+        [0, 0, None, None, None, 123, 123, 123]
+    ) == '00123123123...'

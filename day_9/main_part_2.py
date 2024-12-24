@@ -6,12 +6,13 @@ test_data = load_test_intput()
 assert run_for_full_moved(test_data[0]) == 2858
 
 data = load_input()
-raw_rearranged = generate(data[0])
 
+#Wrong - too low: 116624657569
+#Wrong - too low: 230632628781
+# print(generate(data[0]))
+
+raw_rearranged = generate(data[0])
 with open('rearranged_input.txt', 'w+') as file:
     file.write(raw_rearranged)
     file.flush()
     file.close()
-
-# print(run_for_full_moved(data[0]))
-# Wrong - too low: 116624657569
